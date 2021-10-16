@@ -16,26 +16,34 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package it.apuliatechs.euris.service.calculator.exception;
+package it.apuliatechs.euris.service.calculator.util;
+
+import it.apuliatechs.euris.service.calculator.exception.CalculationException;
+
+import static java.util.Objects.isNull;
 
 /**
- * The CalculationException class.
- * Generic exception thrown if an error occur during the calculation.
- * It covers all kinds of errors such as "value too large to be represented"
- * or "value to be subtracted greater than the starting value".
+ * The CalculatorUtil class.
  *
  * @author Apuliatechs
  * @version 1.0.0
  * @since 1.0.0
  */
-public class CalculationException extends Throwable{
+public class CalculatorUtil {
 
-    public CalculationException(String message) {
-        super(message);
+    public static void valuesCheck(Object... values) throws CalculationException {
+        for (int i = 0; i < values.length; i++) {
+            valueCheck(values[i], "Value [" + (i+1) + "] is null");
+        }
     }
 
-    public CalculationException(String message, Throwable cause) {
-        super(message, cause);
+    public static void valuesCheck(Object first, Object second) throws CalculationException {
+        valueCheck(first, "The first value is null");
+        valueCheck(second, "The second value is null");
+    }
+
+    public static void valueCheck(Object value, String message) throws CalculationException {
+        if (isNull(value)) throw new CalculationException(message);
     }
 
 }

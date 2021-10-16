@@ -20,6 +20,10 @@ package it.apuliatechs.euris.service.calculator.engine;
 
 import it.apuliatechs.euris.service.calculator.exception.CalculationException;
 
+import java.util.function.BiFunction;
+
+import static it.apuliatechs.euris.service.calculator.util.CalculatorUtil.valuesCheck;
+
 /**
  * The SimpleCalculatorEngine class.
  *
@@ -31,22 +35,33 @@ public class SimpleCalculatorEngine extends AbstractCalculatorEngine<Long, Long>
 
     @Override
     public Long sum(Long first, Long second) throws CalculationException {
-        return null;
+        return secureCall(first, second, "sum", Math::addExact);
     }
 
     @Override
     public Long subtract(Long first, Long second) throws CalculationException {
-        return null;
+        return secureCall(first, second, "subtract", Math::subtractExact);
     }
 
     @Override
     public Long divide(Long first, Long second) throws CalculationException {
-        return null;
+        return secureCall(first, second, "divide", Math::floorMod);
     }
 
     @Override
     public Long multiply(Long first, Long second) throws CalculationException {
-        return null;
+        return secureCall(first, second, "multiply", Math::multiplyExact);
+    }
+
+    public Long secureCall(Long first, Long second, String functionName, BiFunction<Long, Long, Long> function) throws CalculationException {
+        valuesCheck(first, second);
+        long result;
+        try {
+            result = function.apply(first, second);
+        } catch (ArithmeticException e) {
+            throw new CalculationException("Error during " + functionName + " call", e);
+        }
+        return result;
     }
 
 }

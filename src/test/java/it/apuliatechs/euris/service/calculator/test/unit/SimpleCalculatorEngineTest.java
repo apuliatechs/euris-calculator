@@ -24,8 +24,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * The SimpleCalculatorTest class.
@@ -50,7 +49,7 @@ public class SimpleCalculatorEngineTest {
             "27,44,71",
             "55,0,55"
     })
-    void add(Long first, Long second, Long expectedResult) {
+    void engine_whenValuesAreValid_ThenDoCalculation(Long first, Long second, Long expectedResult) {
         Long result = 0L;
         try {
             result = engine.sum(first, second);
@@ -58,6 +57,20 @@ public class SimpleCalculatorEngineTest {
             fail("Sum execution failed", e);
         }
         assertEquals(expectedResult, result);
+    }
+
+    @ParameterizedTest(name = "{0} + {1} = {2}")
+    @CsvSource({
+            "9223372036854775807,1,Overflow",
+            ",20,Null value",
+            "20,,Null value",
+    })
+    void engine_whenValuesAreNotValid_ThenDoThrowException(Long first, Long second, String message) {
+        CalculationException exception = assertThrows(
+                CalculationException.class,
+                () -> engine.sum(first, second),
+                "Exception expected for " + message
+        );
     }
 
 }
